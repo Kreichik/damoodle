@@ -1,5 +1,5 @@
 // users.js - Единый источник данных о пользователях
-const USERS = {
+export const USERS = {
     "240930": "Yan Kudashov",
         "242521": "Dana Tutkyshbayeva",
         "241084": "Bakdaulet Abdikul",
