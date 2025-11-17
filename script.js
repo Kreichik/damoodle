@@ -1,21 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // === АВТОРИЗАЦИЯ И ИНИЦИАЛИЗАЦИЯ ===
     const currentUser = localStorage.getItem('currentUser');
     if (!currentUser) {
         window.location.href = '/login.html';
         return;
     }
 
-    // Персонализация страницы
     document.querySelectorAll('.user-name').forEach(el => el.textContent = currentUser);
     const userFooterLink = document.querySelector('.footer-content p a');
     if (userFooterLink) userFooterLink.textContent = currentUser;
 
-    // === ПОЛУЧЕНИЕ ЭЛЕМЕНТОВ DOM ===
     const userProfile = document.getElementById('user-profile');
     const dropdownMenu = document.getElementById('dropdown-menu');
     const logoutBtn = document.getElementById('logout-btn');
-
     const addSubmissionBtn = document.getElementById('add-submission-btn');
     const editSubmissionBtn = document.getElementById('edit-submission-btn');
     const uploadSection = document.getElementById('upload-section');
@@ -29,28 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const submissionStatusCell = document.getElementById('submission-status-cell');
 
     let selectedFile = null;
-    const submissionStorageKey = `submission_${currentUser}`;
-    
-    // === ЛОГИКА ВЫПАДАЮЩЕГО МЕНЮ И ВЫХОДА ===
-    userProfile.addEventListener('click', (event) => {
-        event.stopPropagation(); // Остановка "всплытия" события, чтобы клик по меню не закрыл его сразу
-        dropdownMenu.classList.toggle('show');
-    });
+    const submissionStorageKey = `submission_${currentUser.replace(/\s/g, '_')}`;
+    const finalGradeKey = `finalGrade_${currentUser.replace(/\s/g, '_')}`;
 
-    logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('currentUser'); // Очищаем данные пользователя
-        window.location.href = '/login.html'; // Перенаправляем на страницу входа
-    });
-
-    // Закрытие меню при клике вне его
-    window.addEventListener('click', () => {
-        if (dropdownMenu.classList.contains('show')) {
-            dropdownMenu.classList.remove('show');
-        }
-    });
-
-
-    // === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
     function formatSubmissionDate(date) {
         const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -73,10 +50,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         submissionStatusCell.textContent = 'Submitted for grading';
         submissionStatusCell.classList.add('status-submitted');
+
+        // === НАЧАЛО НОВОЙ ЛОГИКИ ОТОБРАЖЕНИЯ ОЦЕНКИ ===
+        const finalGrade = localStorage.getItem(finalGradeKey);
+        
         const gradingStatusRow = submissionTableBody.insertRow();
-        gradingStatusRow.innerHTML = `<th>Grading status</th><td>Not graded</td>`;
+        if (finalGrade) {
+            gradingStatusRow.innerHTML = `<th>Grading status</th><td>Graded</td>`;
+            const gradeRow = submissionTableBody.insertRow();
+            gradeRow.innerHTML = `<th>Grade</th><td>${finalGrade} / 100.00</td>`;
+        } else {
+            gradingStatusRow.innerHTML = `<th>Grading status</th><td>Not graded</td>`;
+        }
+        // === КОНЕЦ НОВОЙ ЛОГИКИ ===
+
         const lastModifiedRow = submissionTableBody.insertRow();
         lastModifiedRow.innerHTML = `<th>Last modified</th><td>${formatSubmissionDate(submissionDate)}</td>`;
+
         addSubmissionBtn.style.display = 'none';
         editSubmissionBtn.style.display = 'inline-block';
     }
@@ -89,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
         fileInput.value = '';
     }
 
-    // === ЛОГИКА ПРИ ЗАГРУЗКЕ СТРАНИЦЫ ===
     const savedSubmission = localStorage.getItem(submissionStorageKey);
     if (savedSubmission) {
         const submissionData = JSON.parse(savedSubmission);
@@ -97,13 +86,24 @@ document.addEventListener('DOMContentLoaded', () => {
         renderSubmittedState(submissionDate);
     }
 
-    // === ОБРАБОТЧИКИ СОБЫТИЙ ===
-    function toggleUploadSection() {
-        if (uploadSection.style.display === 'none') {
-            uploadSection.style.display = 'block';
-        } else {
-            uploadSection.style.display = 'none';
+    userProfile.addEventListener('click', (event) => {
+        event.stopPropagation();
+        dropdownMenu.classList.toggle('show');
+    });
+
+    logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('currentUser');
+        window.location.href = '/login.html';
+    });
+
+    window.addEventListener('click', () => {
+        if (dropdownMenu.classList.contains('show')) {
+            dropdownMenu.classList.remove('show');
         }
+    });
+
+    function toggleUploadSection() {
+        uploadSection.style.display = (uploadSection.style.display === 'none') ? 'block' : 'none';
     }
     addSubmissionBtn.addEventListener('click', toggleUploadSection);
     editSubmissionBtn.addEventListener('click', toggleUploadSection);
@@ -139,18 +139,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await fetch('/api/upload', { method: 'POST', body: formData });
-            const result = await response.json();
+            if (!response.ok) throw new Error((await response.json()).message || 'An error occurred.');
 
-            if (response.ok) {
-                const submissionDate = new Date();
-                const submissionData = { status: 'submitted', date: submissionDate.toISOString() };
-                localStorage.setItem(submissionStorageKey, JSON.stringify(submissionData));
-                renderSubmittedState(submissionDate);
-                uploadSection.style.display = 'none';
-                resetUploadState();
-            } else {
-                throw new Error(result.message || 'An error occurred.');
-            }
+            const submissionDate = new Date();
+            const submissionData = { status: 'submitted', date: submissionDate.toISOString() };
+            localStorage.setItem(submissionStorageKey, JSON.stringify(submissionData));
+
+            renderSubmittedState(submissionDate);
+            uploadSection.style.display = 'none';
+            resetUploadState();
         } catch (error) {
             uploadStatus.textContent = `❌ Error: ${error.message}`;
             uploadStatus.style.color = 'red';

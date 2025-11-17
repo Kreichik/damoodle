@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peer Grading</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="grading-container">
+            <!-- Шаг 1: Выбор того, кто оценивает -->
+            <div id="grader-selection-view">
+                <h1>Peer Grading</h1>
+                <p>Please select your name to start grading.</p>
+                <select id="grader-select">
+                    <option value="">-- Select Your Name --</option>
+                </select>
+                <button class="btn btn-primary" id="start-grading-btn">Start Grading</button>
+            </div>
+
+            <!-- Шаг 2: Список пользователей для оценки -->
+            <div id="grading-view" style="display: none;">
+                <h2 id="grading-title"></h2>
+                <p>Select a user to grade them.</p>
+                <ul id="gradee-list"></ul>
+                 <a href="/" class="back-link">← Back to main page</a>
+            </div>
+
+            <!-- Шаг 3: Форма для ввода оценки -->
+            <div id="grade-form-view" style="display: none;">
+                <h2 id="grade-form-title"></h2>
+                <form id="grade-form">
+                    <input type="number" id="grade-input" min="0" max="100" placeholder="Grade (0-100)" required>
+                    <div id="grade-error" class="error-message"></div>
+                    <button type="submit" class="btn btn-primary">Submit Grade</button>
+                    <button type="button" class="btn btn-secondary" id="cancel-grade-btn">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="users.js"></script>
+    <script src="grading.js" type="module"></script>
+</body>
+</html>

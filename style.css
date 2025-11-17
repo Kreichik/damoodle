@@ -456,3 +456,76 @@ body {
 .dropdown-menu button:hover {
     background-color: var(--background-color);
 }
+
+/* === Стили для страницы оценок === */
+.grading-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.grading-container h1, .grading-container h2 {
+    margin-bottom: 20px;
+}
+
+.grading-container select, .grading-container input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+}
+
+.grading-container button {
+    margin-top: 10px;
+}
+
+.gradee-item {
+    list-style: none;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: left;
+    font-size: 1.1rem;
+    transition: background-color 0.2s;
+}
+
+.gradee-item:hover {
+    background-color: var(--background-color);
+}
+
+.gradee-item.graded {
+    background-color: #e8f5e9;
+    cursor: default;
+}
+
+.gradee-item.graded span {
+    float: right;
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+.grading-link {
+    display: block;
+    margin-bottom: 20px;
+    font-weight: 500;
+    color: var(--link-color);
+    text-decoration: none;
+}
+.grading-link:hover {
+    text-decoration: underline;
+}
