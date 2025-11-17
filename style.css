@@ -529,3 +529,40 @@ body {
 .grading-link:hover {
     text-decoration: underline;
 }
+
+/* === Стили для вкладок и отправки ссылки === */
+.submission-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text-muted);
+    border-bottom: 3px solid transparent;
+}
+
+.tab-btn.active {
+    color: var(--link-color);
+    border-bottom-color: var(--link-color);
+}
+
+.link-textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    resize: vertical;
+}
+
+.submission-content-link {
+    display: inline-block;
+    margin-top: 5px;
+    font-weight: 500;
+}

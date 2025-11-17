@@ -79,38 +79,49 @@
                         </table>
                     </div>
                     
-                    <div class="file-picker-card" id="upload-section" style="display: none;">
-                        <div class="file-picker-toolbar">
-                            <div class="toolbar-left"><button class="toolbar-btn add-file-btn"><i class="fa-solid fa-plus"></i></button></div>
-                            <div class="toolbar-right">
-                                <span class="file-size-info">Maximum file size: 4 MB, maximum number of files: 1</span>
-                                <div class="view-btn-group">
-                                    <button class="toolbar-btn active"><i class="fa-solid fa-grip"></i></button>
-                                    <button class="toolbar-btn"><i class="fa-solid fa-list"></i></button>
-                                    <button class="toolbar-btn"><i class="fa-solid fa-align-justify"></i></button>
+                    <!-- === НАЧАЛО ИЗМЕНЕНИЙ В БЛОКЕ ЗАГРУЗКИ === -->
+                    <div class="card" id="upload-section" style="display: none;">
+                        <div class="submission-tabs">
+                            <button id="file-tab-btn" class="tab-btn active">File submission</button>
+                            <button id="link-tab-btn" class="tab-btn">Online text</button>
+                        </div>
+                        <form id="upload-form">
+                            <!-- Блок для загрузки файла -->
+                            <div id="file-submission-div">
+                                <div class="file-picker-card">
+                                    <div class="file-picker-toolbar">
+                                        <div class="toolbar-left"><button type="button" class="toolbar-btn add-file-btn"><i class="fa-solid fa-plus"></i></button></div>
+                                        <div class="toolbar-right">
+                                            <span class="file-size-info">Maximum file size: 4.5 MB</span>
+                                            <div class="view-btn-group">
+                                                <button type="button" class="toolbar-btn active"><i class="fa-solid fa-grip"></i></button>
+                                                <button type="button" class="toolbar-btn"><i class="fa-solid fa-list"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="file-picker-content">
+                                        <div class="drop-zone" id="drop-zone">
+                                            <div class="drop-zone-icon"><i class="fa-solid fa-arrow-down"></i></div>
+                                            <p>You can drag and drop files here to add them.</p>
+                                            <input type="file" id="file-input" hidden>
+                                        </div>
+                                        <div id="file-info" class="file-info"></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="file-picker-content">
-                            <div class="content-header"><i class="fa-solid fa-folder"></i><span>Files</span></div>
-                            <form id="upload-form">
-                                <div class="drop-zone" id="drop-zone">
-                                    <div class="drop-zone-icon"><i class="fa-solid fa-arrow-down"></i></div>
-                                    <p>You can drag and drop files here to add them.</p>
-                                    <input type="file" id="file-input" hidden>
-                                </div>
-                                <div id="file-info" class="file-info"></div>
-                                <div class="form-actions">
-                                     <button type="submit" class="btn btn-primary" id="submit-file-btn" disabled>Save changes</button>
-                                     <p id="upload-status" class="upload-status"></p>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="file-picker-footer">
-                            <p><strong>Accepted file types:</strong></p>
-                            <p>Image files to be optimised, such as badges .gif .jpe .jpeg .jpg .png .webp</p>
-                        </div>
+                            <!-- Блок для вставки ссылки -->
+                            <div id="link-submission-div" style="display: none;">
+                                <textarea id="link-input" class="link-textarea" placeholder="Paste your link here (e.g., https://github.com/...)" rows="4"></textarea>
+                            </div>
+                            <!-- Общие кнопки для формы -->
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="submit-btn">Save changes</button>
+                                <p id="upload-status" class="upload-status"></p>
+                            </div>
+                        </form>
                     </div>
+                    <!-- === КОНЕЦ ИЗМЕНЕНИЙ === -->
+
 
                     <div class="page-navigation">
                         <a href="#" class="nav-link">◄ Lecture 3</a>
