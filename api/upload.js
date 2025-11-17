@@ -3,7 +3,6 @@ const fetch = require('node-fetch');
 const fs = require('fs');
 const FormData = require('form-data');
 
-// Vercel требует, чтобы конфигурация body-parser была выключена
 module.exports.config = {
     api: {
         bodyParser: false,
@@ -15,7 +14,6 @@ module.exports = async (req, res) => {
         return res.status(405).json({ message: 'Method Not Allowed' });
     }
 
-    // Получаем токен и ID чата из переменных окружения
     const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
     const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
@@ -32,8 +30,9 @@ module.exports = async (req, res) => {
             return res.status(500).json({ message: 'Error parsing the file.' });
         }
         
-        // В formidable v3 файлы находятся в массиве
         const file = files.file[0];
+        // Получаем имя пользователя из полей формы
+        const username = fields.username ? fields.username[0] : 'Unknown User';
 
         if (!file) {
              return res.status(400).json({ message: 'No file uploaded.' });
@@ -42,11 +41,11 @@ module.exports = async (req, res) => {
         const telegramApiUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`;
 
         try {
-            // Создаем новые form-data для отправки в Telegram
             const formData = new FormData();
             formData.append('chat_id', CHAT_ID);
             formData.append('document', fs.createReadStream(file.filepath), file.originalFilename);
-            formData.append('caption', `Новый файл: ${file.originalFilename}`);
+            // Формируем подпись с именем пользователя
+            formData.append('caption', `Новый файл от ${username}: ${file.originalFilename}`);
 
             const telegramResponse = await fetch(telegramApiUrl, {
                 method: 'POST',
@@ -60,7 +59,6 @@ module.exports = async (req, res) => {
                 throw new Error(telegramResult.description || 'Telegram API error');
             }
 
-            // Отправляем успешный ответ на фронтенд
             res.status(200).json({ 
                 message: 'File uploaded successfully!', 
                 fileName: file.originalFilename 

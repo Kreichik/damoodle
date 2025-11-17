@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 :root {
-    --primary-color: #007bff;
+    --primary-color: #0d5ca2;
     --border-color: #dee2e6;
     --background-color: #f8f9fa;
     --text-color: #212529;
@@ -9,7 +9,7 @@
     --card-bg: #fff;
     --footer-bg: #343a40;
     --footer-text: #fff;
-    --link-color: #0069d9;
+    --link-color: #0d5ca2;
 }
 
 * {
@@ -237,80 +237,12 @@ body {
     text-decoration: underline;
 }
 
-/* Стили для блока загрузки */
-.upload-section {
-    border-top: 3px solid var(--primary-color);
-}
-
-.drop-zone {
-    border: 2px dashed var(--border-color);
-    border-radius: 10px;
-    padding: 40px;
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.2s, border-color 0.2s;
-}
-
-.drop-zone.dragover {
-    background-color: #e9f5ff;
-    border-color: var(--primary-color);
-}
-
-.drop-zone i {
-    font-size: 3rem;
-    color: var(--primary-color);
-}
-
-.drop-zone p {
-    margin-top: 15px;
-    color: var(--text-muted);
-}
-
-.file-info {
-    margin-top: 15px;
-    font-weight: 500;
-}
-
-.form-actions {
-    margin-top: 15px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.upload-status {
-    font-weight: 500;
-}
-
-/* Адаптивность */
-@media (max-width: 768px) {
-    .content-body {
-        flex-direction: column;
-    }
-
-    .side-nav {
-        flex: 1;
-        width: 100%;
-    }
-
-    .header {
-        flex-direction: column;
-        gap: 10px;
-    }
-}
-
-/* ===================================== */
-/* == Стили для нового блока загрузки == */
-/* ===================================== */
-
-/* Главный контейнер блока */
 .file-picker-card {
     border: 1px solid var(--border-color);
     border-radius: 5px;
     background-color: var(--card-bg);
 }
 
-/* Верхняя панель инструментов */
 .file-picker-toolbar {
     display: flex;
     justify-content: space-between;
@@ -369,7 +301,6 @@ body {
     z-index: 1;
 }
 
-/* Основное содержимое */
 .file-picker-content {
     padding: 15px;
 }
@@ -386,9 +317,8 @@ body {
     color: var(--link-color);
 }
 
-/* Переопределение стилей для drop-zone */
-.upload-section { /* Старый класс, оставляем для совместимости */
-    border-top: none; /* Убираем синюю полоску */
+.upload-section {
+    border-top: none;
 }
 
 .drop-zone {
@@ -401,10 +331,16 @@ body {
     gap: 15px;
     background-color: #f8f9fa;
     min-height: 150px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.drop-zone.dragover {
+    background-color: #e9f5ff;
+    border-color: var(--primary-color);
 }
 
 .drop-zone i {
-    /* Убираем старый стиль иконки */
     font-size: inherit;
     color: inherit;
 }
@@ -426,7 +362,6 @@ body {
     color: #495057;
 }
 
-/* Нижний блок (футер) */
 .file-picker-footer {
     padding: 15px;
     border-top: 1px solid var(--border-color);
@@ -437,10 +372,9 @@ body {
     font-size: 0.9rem;
 }
 
-/* Обновляем кнопку отправки */
 #upload-form .form-actions {
     margin-top: 15px;
-    display: block; /* Чтобы кнопка была на всю ширину */
+    display: block;
 }
 
 #submit-file-btn {
@@ -449,7 +383,63 @@ body {
     margin-top: 10px;
 }
 
-/* Стиль для ячейки после успешной отправки */
 .status-submitted {
     background-color: #cfefcf;
+}
+
+/* Стили для страницы логина */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--background-color);
+}
+
+.login-box {
+    padding: 40px;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-box h1 {
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.login-box .error-message {
+    color: #dc3545;
+    margin-top: -10px;
+    margin-bottom: 15px;
+    min-height: 20px;
+}
+
+@media (max-width: 768px) {
+    .content-body {
+        flex-direction: column;
+    }
+
+    .side-nav {
+        flex: 1;
+        width: 100%;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 10px;
+    }
 }
