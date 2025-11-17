@@ -1,0 +1,13 @@
+{
+  "name": "damoodle-upload",
+  "version": "1.0.0",
+  "description": "File uploader to Telegram",
+  "main": "index.js",
+  "scripts": {
+    "start": "echo \"No start script specified\""
+  },
+  "dependencies": {
+    "formidable": "^3.5.1",
+    "node-fetch": "^2.7.0"
+  }
+}

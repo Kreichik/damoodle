@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Design Patterns</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Подключаем иконки Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-left">
+                <img src="./assets/logo.png" alt="Logo" class="logo">
+            </div>
+            <div class="header-right">
+                <i class="fa-regular fa-bell"></i>
+                <span class="user-name">Yan Kudashov</span>
+                <div class="avatar-container">
+                    <img src="./assets/ava.png" alt="Avatar" class="avatar">
+                    <i class="fa-solid fa-caret-down"></i>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <nav class="breadcrumbs">
+                <a href="#">Home</a> / <a href="#">My courses</a> / <a href="#">Software Design Patterns | Temirgaly Dinmukhammed</a> / <a href="#">Week 3</a> / <a href="#">Assignment 3</a>
+            </nav>
+
+            <div class="content-body">
+                <aside class="side-nav">
+                    <h4>Navigation</h4>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Dashboard</a></li>
+                        <li><a href="#">Site pages</a></li>
+                        <li><a href="#" class="active">My courses</a></li>
+                    </ul>
+                </aside>
+
+                <section class="main-section">
+                    <div class="card">
+                        <h2>Assignment 3</h2>
+                        <div class="assignment-details">
+                            <p><strong>Opened:</strong> Thursday, 18 September 2025, 12:00 AM</p>
+                            <p><strong>Due:</strong> Sunday, 28 September 2025, 12:00 AM</p>
+                        </div>
+                        <div class="description-box">
+                            <p>Assessment Description</p>
+                        </div>
+                        <button class="btn btn-primary" id="add-submission-btn">Add submission</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>Submission status</h3>
+                        <table class="submission-table">
+                            <tr>
+                                <th>Submission status</th>
+                                <td>Not submitted</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <!-- Скрытый блок для загрузки файла -->
+                    <div class="card upload-section" id="upload-section" style="display: none;">
+                        <form id="upload-form">
+                            <div class="drop-zone" id="drop-zone">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <p>Перетащите файлы сюда или щёлкните для выбора</p>
+                                <input type="file" id="file-input" hidden>
+                            </div>
+                            <div id="file-info" class="file-info"></div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="submit-file-btn" disabled>Отправить</button>
+                                <p id="upload-status" class="upload-status"></p>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="page-navigation">
+                        <a href="#" class="nav-link">◄ Lecture 3</a>
+                        <select class="jump-to">
+                            <option>Jump to...</option>
+                        </select>
+                        <a href="#" class="nav-link">Lecture 4 ►</a>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <a href="#" class="contact-support"><i class="fa-regular fa-envelope"></i> Contact site support</a>
+                <p>You are logged in as <a href="#">Yan Kudashov</a> (<a href="#">Log out</a>)</p>
+                <a href="#">Software Design Patterns | Temirgaly Dinmukhammed</a>
+                <a href="#">Data retention summary</a>
+            </div>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
