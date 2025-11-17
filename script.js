@@ -1,14 +1,17 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // === АВТОРИЗАЦИЯ И ИНИЦИАЛИЗАЦИЯ ===
     const currentUser = localStorage.getItem('currentUser');
     if (!currentUser) {
         window.location.href = '/login.html';
         return;
     }
 
+    // Персонализация страницы
     document.querySelectorAll('.user-name').forEach(el => el.textContent = currentUser);
     const userFooterLink = document.querySelector('.footer-content p a');
     if (userFooterLink) userFooterLink.textContent = currentUser;
 
+    // === ПОЛУЧЕНИЕ ЭЛЕМЕНТОВ DOM ===
     const userProfile = document.getElementById('user-profile');
     const dropdownMenu = document.getElementById('dropdown-menu');
     const logoutBtn = document.getElementById('logout-btn');
@@ -25,67 +28,63 @@ document.addEventListener('DOMContentLoaded', () => {
     const submissionStatusCell = document.getElementById('submission-status-cell');
 
     let selectedFile = null;
-    const submissionStorageKey = `submission_${currentUser.replace(/\s/g, '_')}`;
-    const finalGradeKey = `finalGrade_${currentUser.replace(/\s/g, '_')}`;
 
-    function formatSubmissionDate(date) {
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        const dayName = days[date.getDay()];
-        const dayOfMonth = date.getDate();
-        const monthName = months[date.getMonth()];
-        const year = date.getFullYear();
-        let hours = date.getHours();
-        const minutes = date.getMinutes();
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12;
-        hours = hours ? hours : 12;
-        const paddedMinutes = minutes < 10 ? '0' + minutes : minutes;
-        return `${dayName}, ${dayOfMonth} ${monthName} ${year}, ${hours}:${paddedMinutes} ${ampm}`;
+    // === ГЛАВНЫЕ ФУНКЦИИ ===
+
+    // 1. Получает данные о пользователе с сервера и запускает обновление UI
+    async function updateSubmissionStatus() {
+        try {
+            const res = await fetch(`/api/get-grades?username=${encodeURIComponent(currentUser)}`);
+            if (!res.ok) throw new Error('Failed to fetch user data');
+            const data = await res.json();
+            
+            if (data.submission && data.submission.status === 'submitted') {
+                const submissionDate = new Date(data.submission.date);
+                renderSubmittedState(submissionDate, data.grades || {});
+            }
+        } catch (error) {
+            console.error("Update Status Error:", error);
+            // Можно добавить сообщение об ошибке для пользователя, если нужно
+        }
     }
-    
-    function renderSubmittedState(submissionDate) {
+
+    // 2. Обновляет таблицу статуса на основе данных с сервера
+    function renderSubmittedState(submissionDate, grades) {
+        // Очищаем старые строки, кроме первой (Submission status)
         while (submissionTableBody.rows.length > 1) {
             submissionTableBody.deleteRow(1);
         }
         submissionStatusCell.textContent = 'Submitted for grading';
         submissionStatusCell.classList.add('status-submitted');
 
-        // === НАЧАЛО НОВОЙ ЛОГИКИ ОТОБРАЖЕНИЯ ОЦЕНКИ ===
-        const finalGrade = localStorage.getItem(finalGradeKey);
+        const gradeValues = Object.values(grades);
+        const allGradersCount = 5; // 6 пользователей - 1 (сам себя) = 5
         
         const gradingStatusRow = submissionTableBody.insertRow();
-        if (finalGrade) {
+        if (gradeValues.length === allGradersCount) {
+            // Если все оценки выставлены, считаем средний балл
+            const sum = gradeValues.reduce((acc, grade) => acc + parseInt(grade, 10), 0);
+            const average = (sum / gradeValues.length).toFixed(2);
             gradingStatusRow.innerHTML = `<th>Grading status</th><td>Graded</td>`;
             const gradeRow = submissionTableBody.insertRow();
-            gradeRow.innerHTML = `<th>Grade</th><td>${finalGrade} / 100.00</td>`;
+            gradeRow.innerHTML = `<th>Grade</th><td>${average} / 100.00</td>`;
         } else {
-            gradingStatusRow.innerHTML = `<th>Grading status</th><td>Not graded</td>`;
+            // Если оценок не хватает, показываем прогресс
+            gradingStatusRow.innerHTML = `<th>Grading status</th><td>Not graded (${gradeValues.length}/${allGradersCount} reviews)</td>`;
         }
-        // === КОНЕЦ НОВОЙ ЛОГИКИ ===
 
+        // Добавляем строку с датой
         const lastModifiedRow = submissionTableBody.insertRow();
         lastModifiedRow.innerHTML = `<th>Last modified</th><td>${formatSubmissionDate(submissionDate)}</td>`;
 
+        // Управляем видимостью кнопок
         addSubmissionBtn.style.display = 'none';
         editSubmissionBtn.style.display = 'inline-block';
     }
 
-    function resetUploadState() {
-        selectedFile = null;
-        fileInfo.textContent = '';
-        submitFileBtn.disabled = true;
-        uploadStatus.textContent = '';
-        fileInput.value = '';
-    }
+    // === ОБРАБОТЧИКИ СОБЫТИЙ ===
 
-    const savedSubmission = localStorage.getItem(submissionStorageKey);
-    if (savedSubmission) {
-        const submissionData = JSON.parse(savedSubmission);
-        const submissionDate = new Date(submissionData.date);
-        renderSubmittedState(submissionDate);
-    }
-
+    // Логика выпадающего меню и выхода
     userProfile.addEventListener('click', (event) => {
         event.stopPropagation();
         dropdownMenu.classList.toggle('show');
@@ -102,12 +101,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Открытие/скрытие секции загрузки файла
     function toggleUploadSection() {
         uploadSection.style.display = (uploadSection.style.display === 'none') ? 'block' : 'none';
     }
     addSubmissionBtn.addEventListener('click', toggleUploadSection);
     editSubmissionBtn.addEventListener('click', toggleUploadSection);
 
+    // Логика Drag & Drop
     dropZone.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', () => { if (fileInput.files.length > 0) handleFile(fileInput.files[0]); });
     dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
@@ -118,13 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
     });
 
-    function handleFile(file) {
-        selectedFile = file;
-        fileInfo.textContent = `Selected file: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
-        submitFileBtn.disabled = false;
-        uploadStatus.textContent = '';
-    }
-
+    // Отправка формы
     uploadForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!selectedFile) return;
@@ -139,13 +134,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await fetch('/api/upload', { method: 'POST', body: formData });
-            if (!response.ok) throw new Error((await response.json()).message || 'An error occurred.');
+            if (!response.ok) {
+                const errorResult = await response.json();
+                throw new Error(errorResult.message || 'An error occurred during upload.');
+            }
 
-            const submissionDate = new Date();
-            const submissionData = { status: 'submitted', date: submissionDate.toISOString() };
-            localStorage.setItem(submissionStorageKey, JSON.stringify(submissionData));
-
-            renderSubmittedState(submissionDate);
+            // После успешной загрузки файла, запрашиваем обновленные данные с сервера
+            await updateSubmissionStatus();
+            
             uploadSection.style.display = 'none';
             resetUploadState();
         } catch (error) {
@@ -154,4 +150,40 @@ document.addEventListener('DOMContentLoaded', () => {
             submitFileBtn.disabled = false;
         }
     });
+
+    // === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
+
+    function handleFile(file) {
+        selectedFile = file;
+        fileInfo.textContent = `Selected file: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+        submitFileBtn.disabled = false;
+        uploadStatus.textContent = '';
+    }
+    
+    function resetUploadState() {
+        selectedFile = null;
+        fileInfo.textContent = '';
+        submitFileBtn.disabled = true;
+        uploadStatus.textContent = '';
+        fileInput.value = '';
+    }
+
+    function formatSubmissionDate(date) {
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const dayName = days[date.getDay()];
+        const dayOfMonth = date.getDate();
+        const monthName = months[date.getMonth()];
+        const year = date.getFullYear();
+        let hours = date.getHours();
+        const minutes = date.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        const paddedMinutes = minutes < 10 ? '0' + minutes : minutes;
+        return `${dayName}, ${dayOfMonth} ${monthName} ${year}, ${hours}:${paddedMinutes} ${ampm}`;
+    }
+
+    // === ПЕРВОНАЧАЛЬНАЯ ЗАГРУЗКА ДАННЫХ ===
+    await updateSubmissionStatus();
 });

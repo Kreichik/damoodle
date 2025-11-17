@@ -1,7 +1,8 @@
+// grading.js
 import { USERS } from './users.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Получаем элементы DOM
+document.addEventListener('DOMContentLoaded', async () => {
+    // ... (все getElementById без изменений)
     const graderSelect = document.getElementById('grader-select');
     const startGradingBtn = document.getElementById('start-grading-btn');
     const graderSelectionView = document.getElementById('grader-selection-view');
@@ -18,8 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentGrader = null;
     let currentGradee = null;
     const allUserNames = Object.values(USERS);
+    let allGrades = {}; // Кэш для оценок
 
-    // 1. Заполняем select для выбора оценщика
     allUserNames.forEach(name => {
         const option = document.createElement('option');
         option.value = name;
@@ -27,8 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         graderSelect.appendChild(option);
     });
 
-    // 2. Начинаем оценку
-    startGradingBtn.addEventListener('click', () => {
+    startGradingBtn.addEventListener('click', async () => {
         currentGrader = graderSelect.value;
         if (!currentGrader) {
             alert('Please select your name.');
@@ -37,23 +37,29 @@ document.addEventListener('DOMContentLoaded', () => {
         graderSelectionView.style.display = 'none';
         gradingView.style.display = 'block';
         gradingTitle.textContent = `Grading as: ${currentGrader}`;
-        renderGradeeList();
+        await renderGradeeList();
     });
 
-    // 3. Рендерим список тех, кого нужно оценить
-    function renderGradeeList() {
-        gradeeList.innerHTML = '';
+    async function renderGradeeList() {
+        gradeeList.innerHTML = '<li>Loading...</li>';
         const usersToGrade = allUserNames.filter(name => name !== currentGrader);
         
-        usersToGrade.forEach(name => {
+        // Получаем все оценки для всех пользователей
+        const promises = usersToGrade.map(name =>
+            fetch(`/api/get-grades?username=${encodeURIComponent(name)}`).then(res => res.json())
+        );
+        const results = await Promise.all(promises);
+        
+        gradeeList.innerHTML = '';
+        usersToGrade.forEach((name, index) => {
+            const gradesForUser = results[index].grades;
             const li = document.createElement('li');
             li.textContent = name;
             li.dataset.username = name;
             li.classList.add('gradee-item');
             
-            // Проверяем, была ли уже поставлена оценка
-            const gradeKey = `grade_${name}_by_${currentGrader}`.replace(/\s/g, '_');
-            if (localStorage.getItem(gradeKey)) {
+            const graderKey = currentGrader.replace(/\s/g, '_');
+            if (gradesForUser && gradesForUser[graderKey]) {
                 li.classList.add('graded');
                 li.innerHTML += ' <span>✓ Graded</span>';
             }
@@ -63,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. Показываем форму для ввода оценки
     function showGradeForm(gradeeName) {
         currentGradee = gradeeName;
         gradingView.style.display = 'none';
@@ -72,54 +77,36 @@ document.addEventListener('DOMContentLoaded', () => {
         gradeInput.value = '';
         gradeError.textContent = '';
     }
-
-    // 5. Сохраняем оценку
-    gradeForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const gradeValue = parseInt(gradeInput.value, 10);
-
-        if (isNaN(gradeValue) || gradeValue < 0 || gradeValue > 100) {
-            gradeError.textContent = 'Please enter a number between 0 and 100.';
-            return;
-        }
-        
-        const gradeKey = `grade_${currentGradee}_by_${currentGrader}`.replace(/\s/g, '_');
-        localStorage.setItem(gradeKey, gradeValue);
-        
-        calculateAverageIfComplete(currentGradee);
-        
-        // Возвращаемся к списку
-        gradeFormView.style.display = 'none';
-        gradingView.style.display = 'block';
-        renderGradeeList();
-    });
     
-    // 6. Отмена ввода оценки
     cancelGradeBtn.addEventListener('click', () => {
         gradeFormView.style.display = 'none';
         gradingView.style.display = 'block';
     });
 
-    // 7. Проверяем, все ли оценки выставлены, и считаем средний балл
-    function calculateAverageIfComplete(gradeeName) {
-        const potentialGraders = allUserNames.filter(name => name !== gradeeName);
-        let totalScore = 0;
-        let gradeCount = 0;
-
-        potentialGraders.forEach(grader => {
-            const key = `grade_${gradeeName}_by_${grader}`.replace(/\s/g, '_');
-            const grade = localStorage.getItem(key);
-            if (grade !== null) {
-                totalScore += parseInt(grade, 10);
-                gradeCount++;
-            }
-        });
-
-        // Если все 5 оценок выставлены
-        if (gradeCount === potentialGraders.length) {
-            const average = totalScore / gradeCount;
-            const finalGradeKey = `finalGrade_${gradeeName}`.replace(/\s/g, '_');
-            localStorage.setItem(finalGradeKey, average.toFixed(2));
+    gradeForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const gradeValue = parseInt(gradeInput.value, 10);
+        if (isNaN(gradeValue) || gradeValue < 0 || gradeValue > 100) {
+            gradeError.textContent = 'Please enter a number between 0 and 100.';
+            return;
         }
-    }
+        
+        try {
+            await fetch('/api/submit-grade', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    grader: currentGrader,
+                    gradee: currentGradee,
+                    grade: gradeValue
+                }),
+            });
+
+            gradeFormView.style.display = 'none';
+            gradingView.style.display = 'block';
+            await renderGradeeList();
+        } catch (error) {
+            gradeError.textContent = 'Failed to submit grade. Please try again.';
+        }
+    });
 });
