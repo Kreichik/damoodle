@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInfo = document.getElementById('file-info');
     const submitFileBtn = document.getElementById('submit-file-btn');
     const uploadStatus = document.getElementById('upload-status');
+    const submissionStatusCell = document.getElementById('submission-status-cell');
 
     let selectedFile = null;
 
@@ -54,36 +55,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 5. Обработка отправки формы
     uploadForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!selectedFile) return;
+    e.preventDefault();
+    if (!selectedFile) return;
 
-        submitFileBtn.disabled = true;
-        uploadStatus.textContent = 'Загрузка файла...';
+    submitFileBtn.disabled = true;
+    uploadStatus.textContent = 'Загрузка файла...';
 
-        const formData = new FormData();
-        formData.append('file', selectedFile);
+    const formData = new FormData();
+    formData.append('file', selectedFile);
 
-        try {
-            // Отправляем запрос на наш бэкенд (который мы создадим в api/upload.js)
-            const response = await fetch('/api/upload', {
-                method: 'POST',
-                body: formData,
-            });
+    try {
+        const response = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+        });
 
-            const result = await response.json();
+        const result = await response.json();
 
-            if (response.ok) {
-                uploadStatus.textContent = `✅ Файл "${result.fileName}" успешно отправлен!`;
-                uploadStatus.style.color = 'green';
-            } else {
-                throw new Error(result.message || 'Произошла ошибка.');
-            }
-        } catch (error) {
-            uploadStatus.textContent = `❌ Ошибка: ${error.message}`;
-            uploadStatus.style.color = 'red';
-            submitFileBtn.disabled = false;
+        if (response.ok) {
+            uploadStatus.textContent = `✅ Файл "${result.fileName}" успешно отправлен!`;
+            uploadStatus.style.color = 'green';
+            
+            // === НАЧАЛО НОВОГО КОДА ===
+            submissionStatusCell.textContent = 'Not graded';
+            submissionStatusCell.classList.add('status-submitted');
+            // === КОНЕЦ НОВОГО КОДА ===
+
+        } else {
+            throw new Error(result.message || 'Произошла ошибка.');
         }
-    });
+    } catch (error) {
+        uploadStatus.textContent = `❌ Ошибка: ${error.message}`;
+        uploadStatus.style.color = 'red';
+        submitFileBtn.disabled = false;
+    }
+});
 
     // Вспомогательная функция для обработки файла
     function handleFile(file) {

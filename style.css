@@ -448,3 +448,8 @@ body {
     display: inline-block;
     margin-top: 10px;
 }
+
+/* Стиль для ячейки после успешной отправки */
+.status-submitted {
+    background-color: #cfefcf;
+}
