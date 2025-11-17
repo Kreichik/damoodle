@@ -566,3 +566,105 @@ body {
     margin-top: 5px;
     font-weight: 500;
 }
+/* === Стили для Dashboard (main-dashboard.html) === */
+
+/* Активный пункт в боковой навигации */
+.side-nav li.active-nav a {
+    background-color: #f8f9fa;
+    border-left: 3px solid #007bff;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.side-nav li.active-nav a .fa-check {
+    margin-right: 8px;
+    color: #28a745;
+}
+
+.side-nav li a .fa-gauge {
+    margin-right: 8px;
+}
+
+/* Карточка с контентом курса на дашборде */
+.course-section {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.section-title h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.section-title .fa-chevron-down {
+    color: #007bff;
+}
+
+.collapse-all-link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.collapse-all-link:hover {
+    text-decoration: underline;
+}
+
+/* Список активностей */
+.activity-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    font-size: 1.5rem;
+    margin-right: 15px;
+    width: 24px; /* Для выравнивания иконок */
+    text-align: center;
+}
+
+.activity-item a {
+    text-decoration: none;
+    color: #007bff;
+    font-size: 1rem;
+}
+
+.activity-item a:hover {
+    text-decoration: underline;
+}
+
+.activity-item span {
+    margin-left: 8px;
+    font-size: 0.8rem;
+    color: #6c757d;
+}

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-left">
+                <img src="./assets/logo.png" alt="Logo" class="logo">
+            </div>
+            <div class="header-right">
+                <i class="fa-regular fa-bell"></i>
+                <i class="fa-regular fa-comment"></i>
+                <div class="user-profile" id="user-profile">
+                    <span class="user-name">User Name</span>
+                    <div class="avatar-container">
+                        <img src="./assets/ava.png" alt="Avatar" class="avatar">
+                        <i class="fa-solid fa-caret-down"></i>
+                    </div>
+                    <div class="dropdown-menu" id="dropdown-menu">
+                        <button id="logout-btn">Log out</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <h1 class="page-title">Introduction to Entertainment Methods | Test Test</h1>
+            
+            <nav class="breadcrumbs">
+                <a href="main-dashboard.html">Home</a> / <a href="main-dashboard.html">My courses</a> / <a href="#">Introduction to Entertainment Methods | Test Test</a>
+            </nav>
+
+            <div class="content-body">
+                <aside class="side-nav">
+                    <h4>Navigation</h4>
+                    <ul>
+                        <li class="active-nav"><a href="main-dashboard.html"><i class="fa-solid fa-check"></i> Home</a></li>
+                        <li><a href="#"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+                        <li><a href="#">&gt; Site pages</a></li>
+                        <li><a href="#">&gt; My courses</a></li>
+                    </ul>
+                </aside>
+
+                <section class="main-section">
+                    <div class="course-section">
+                        <div class="section-header">
+                            <div class="section-title">
+                                <i class="fa-solid fa-chevron-down"></i>
+                                <h3>General</h3>
+                            </div>
+                            <a href="#" class="collapse-all-link">Collapse all</a>
+                        </div>
+                        <ul class="activity-list">
+                            <li class="activity-item">
+                                <i class="fa-solid fa-users activity-icon" style="color: #E83E8C;"></i>
+                                <a href="#">Attendance</a>
+                            </li>
+                            <li class="activity-item">
+                                <i class="fa-solid fa-arrow-right-from-bracket activity-icon" style="color: #E83E8C;"></i>
+                                <a href="index.html">Final Exam</a>
+                            </li>
+                            <li class="activity-item">
+                                <i class="fa-solid fa-file-pdf activity-icon" style="color: #007BFF;"></i>
+                                <a href="assets/Syllabus.pdf" target="_blank">Syllabus</a>
+                                <span>PDF</span>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <a href="#" class="contact-support"><i class="fa-regular fa-envelope"></i> Contact site support</a>
+                <p>You are logged in as <a href="#" class="user-name-link">User Name</a> (<a href="#" id="footer-logout-btn">Log out</a>)</p>
+                <a href="#">Home</a>
+                <a href="#">Data retention summary</a>
+            </div>
+        </footer>
+    </div>
+    <script type="module" src="dashboard.js"></script>
+</body>
+</html>
