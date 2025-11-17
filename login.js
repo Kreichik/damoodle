@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     // ВАЖНО: База данных пользователей. Добавьте сюда всех 6 пользователей.
     const users = {
-        "111111": "Yan Kudashov",
-        "222222": "Walter White",
-        "333333": "Jesse Pinkman",
-        "444444": "Saul Goodman",
-        "555555": "Gus Fring",
-        "666666": "Mike Ehrmantraut"
+        "240930": "Yan Kudashov",
+        "242521": "Dana Tutkyshbayeva",
+        "241084": "Bakdaulet Abdikul",
+        "240851": "Daniyal Abrayev",
+        "241718": "Damir Sheneussizov",
+        "241028": "Moldir Yergesh"
     };
 
     const loginForm = document.getElementById('login-form');

@@ -15,16 +15,23 @@
             </div>
             <div class="header-right">
                 <i class="fa-regular fa-bell"></i>
-                <span class="user-name">User Name</span>
-                <div class="avatar-container">
-                    <img src="./assets/ava.png" alt="Avatar" class="avatar">
-                    <i class="fa-solid fa-caret-down"></i>
+                <!-- === НАЧАЛО ИЗМЕНЕНИЙ В HEADER === -->
+                <div class="user-profile" id="user-profile">
+                    <span class="user-name">User Name</span>
+                    <div class="avatar-container">
+                        <img src="./assets/ava.png" alt="Avatar" class="avatar">
+                        <i class="fa-solid fa-caret-down"></i>
+                    </div>
+                    <!-- Выпадающее меню -->
+                    <div class="dropdown-menu" id="dropdown-menu">
+                        <button id="logout-btn">Log Out</button>
+                    </div>
                 </div>
+                <!-- === КОНЕЦ ИЗМЕНЕНИЙ В HEADER === -->
             </div>
         </header>
 
         <main class="main-content">
-            <!-- === ВОССТАНОВЛЕННЫЙ ЗАГОЛОВОК === -->
             <h1 class="page-title">Software Design Patterns | Temirgaly Dinmukhammed</h1>
             
             <nav class="breadcrumbs">
@@ -52,7 +59,6 @@
                         <div class="description-box">
                             <p>Assessment Description</p>
                         </div>
-                        <!-- Контейнер для кнопок, чтобы они были рядом -->
                         <div class="submission-buttons-container">
                             <button class="btn btn-primary" id="add-submission-btn">Add submission</button>
                             <button class="btn btn-secondary" id="edit-submission-btn" style="display: none;">Edit Submission</button>

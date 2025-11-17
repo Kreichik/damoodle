@@ -12,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userFooterLink) userFooterLink.textContent = currentUser;
 
     // === ПОЛУЧЕНИЕ ЭЛЕМЕНТОВ DOM ===
+    const userProfile = document.getElementById('user-profile');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+    const logoutBtn = document.getElementById('logout-btn');
+
     const addSubmissionBtn = document.getElementById('add-submission-btn');
     const editSubmissionBtn = document.getElementById('edit-submission-btn');
     const uploadSection = document.getElementById('upload-section');
@@ -26,12 +30,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let selectedFile = null;
     const submissionStorageKey = `submission_${currentUser}`;
+    
+    // === ЛОГИКА ВЫПАДАЮЩЕГО МЕНЮ И ВЫХОДА ===
+    userProfile.addEventListener('click', (event) => {
+        event.stopPropagation(); // Остановка "всплытия" события, чтобы клик по меню не закрыл его сразу
+        dropdownMenu.classList.toggle('show');
+    });
+
+    logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('currentUser'); // Очищаем данные пользователя
+        window.location.href = '/login.html'; // Перенаправляем на страницу входа
+    });
+
+    // Закрытие меню при клике вне его
+    window.addEventListener('click', () => {
+        if (dropdownMenu.classList.contains('show')) {
+            dropdownMenu.classList.remove('show');
+        }
+    });
+
 
     // === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
-
-    // Форматирует дату
     function formatSubmissionDate(date) {
-        // ... (код форматирования остался без изменений)
         const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         const dayName = days[date.getDay()];
@@ -47,27 +67,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${dayName}, ${dayOfMonth} ${monthName} ${year}, ${hours}:${paddedMinutes} ${ampm}`;
     }
     
-    // Обновляет UI до состояния "Отправлено"
     function renderSubmittedState(submissionDate) {
-        // Очищаем старые строки, кроме первой
         while (submissionTableBody.rows.length > 1) {
             submissionTableBody.deleteRow(1);
         }
-
         submissionStatusCell.textContent = 'Submitted for grading';
         submissionStatusCell.classList.add('status-submitted');
-
         const gradingStatusRow = submissionTableBody.insertRow();
         gradingStatusRow.innerHTML = `<th>Grading status</th><td>Not graded</td>`;
-
         const lastModifiedRow = submissionTableBody.insertRow();
         lastModifiedRow.innerHTML = `<th>Last modified</th><td>${formatSubmissionDate(submissionDate)}</td>`;
-
         addSubmissionBtn.style.display = 'none';
         editSubmissionBtn.style.display = 'inline-block';
     }
 
-    // Сбрасывает состояние формы загрузки
     function resetUploadState() {
         selectedFile = null;
         fileInfo.textContent = '';
@@ -77,8 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // === ЛОГИКА ПРИ ЗАГРУЗКЕ СТРАНИЦЫ ===
-
-    // Проверяем, есть ли сохраненные данные об отправке
     const savedSubmission = localStorage.getItem(submissionStorageKey);
     if (savedSubmission) {
         const submissionData = JSON.parse(savedSubmission);
@@ -86,10 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderSubmittedState(submissionDate);
     }
 
-
     // === ОБРАБОТЧИКИ СОБЫТИЙ ===
-
-    // Клик на "Add Submission" или "Edit Submission"
     function toggleUploadSection() {
         if (uploadSection.style.display === 'none') {
             uploadSection.style.display = 'block';
@@ -100,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
     addSubmissionBtn.addEventListener('click', toggleUploadSection);
     editSubmissionBtn.addEventListener('click', toggleUploadSection);
 
-    // Логика Drag & Drop и выбора файла
     dropZone.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', () => { if (fileInput.files.length > 0) handleFile(fileInput.files[0]); });
     dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
@@ -118,7 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
         uploadStatus.textContent = '';
     }
 
-    // Отправка формы
     uploadForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!selectedFile) return;
@@ -139,9 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const submissionDate = new Date();
                 const submissionData = { status: 'submitted', date: submissionDate.toISOString() };
                 localStorage.setItem(submissionStorageKey, JSON.stringify(submissionData));
-
                 renderSubmittedState(submissionDate);
-                
                 uploadSection.style.display = 'none';
                 resetUploadState();
             } else {
