@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Software Design Patterns</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Подключаем иконки Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
@@ -16,7 +15,7 @@
             </div>
             <div class="header-right">
                 <i class="fa-regular fa-bell"></i>
-                <span class="user-name">Yan Kudashov</span>
+                <span class="user-name">User Name</span>
                 <div class="avatar-container">
                     <img src="./assets/ava.png" alt="Avatar" class="avatar">
                     <i class="fa-solid fa-caret-down"></i>
@@ -25,6 +24,9 @@
         </header>
 
         <main class="main-content">
+            <!-- === ВОССТАНОВЛЕННЫЙ ЗАГОЛОВОК === -->
+            <h1 class="page-title">Software Design Patterns | Temirgaly Dinmukhammed</h1>
+            
             <nav class="breadcrumbs">
                 <a href="#">Home</a> / <a href="#">My courses</a> / <a href="#">Software Design Patterns | Temirgaly Dinmukhammed</a> / <a href="#">Week 3</a> / <a href="#">Assignment 3</a>
             </nav>
@@ -50,7 +52,11 @@
                         <div class="description-box">
                             <p>Assessment Description</p>
                         </div>
-                        <button class="btn btn-primary" id="add-submission-btn">Add submission</button>
+                        <!-- Контейнер для кнопок, чтобы они были рядом -->
+                        <div class="submission-buttons-container">
+                            <button class="btn btn-primary" id="add-submission-btn">Add submission</button>
+                            <button class="btn btn-secondary" id="edit-submission-btn" style="display: none;">Edit Submission</button>
+                        </div>
                     </div>
 
                     <div class="card">
@@ -67,11 +73,7 @@
                     
                     <div class="file-picker-card" id="upload-section" style="display: none;">
                         <div class="file-picker-toolbar">
-                            <div class="toolbar-left">
-                                <button class="toolbar-btn add-file-btn">
-                                    <i class="fa-solid fa-plus"></i>
-                                </button>
-                            </div>
+                            <div class="toolbar-left"><button class="toolbar-btn add-file-btn"><i class="fa-solid fa-plus"></i></button></div>
                             <div class="toolbar-right">
                                 <span class="file-size-info">Maximum file size: 256 MB, maximum number of files: 1</span>
                                 <div class="view-btn-group">
@@ -81,22 +83,14 @@
                                 </div>
                             </div>
                         </div>
-                    
                         <div class="file-picker-content">
-                            <div class="content-header">
-                                <i class="fa-solid fa-folder"></i>
-                                <span>Files</span>
-                            </div>
-                    
+                            <div class="content-header"><i class="fa-solid fa-folder"></i><span>Files</span></div>
                             <form id="upload-form">
                                 <div class="drop-zone" id="drop-zone">
-                                    <div class="drop-zone-icon">
-                                        <i class="fa-solid fa-arrow-down"></i>
-                                    </div>
+                                    <div class="drop-zone-icon"><i class="fa-solid fa-arrow-down"></i></div>
                                     <p>You can drag and drop files here to add them.</p>
                                     <input type="file" id="file-input" hidden>
                                 </div>
-                    
                                 <div id="file-info" class="file-info"></div>
                                 <div class="form-actions">
                                      <button type="submit" class="btn btn-primary" id="submit-file-btn" disabled>Save changes</button>
@@ -104,7 +98,6 @@
                                 </div>
                             </form>
                         </div>
-                    
                         <div class="file-picker-footer">
                             <p><strong>Accepted file types:</strong></p>
                             <p>Image files to be optimised, such as badges .gif .jpe .jpeg .jpg .png .webp</p>
@@ -113,9 +106,7 @@
 
                     <div class="page-navigation">
                         <a href="#" class="nav-link">◄ Lecture 3</a>
-                        <select class="jump-to">
-                            <option>Jump to...</option>
-                        </select>
+                        <select class="jump-to"><option>Jump to...</option></select>
                         <a href="#" class="nav-link">Lecture 4 ►</a>
                     </div>
                 </section>
@@ -125,7 +116,7 @@
         <footer class="footer">
             <div class="footer-content">
                 <a href="#" class="contact-support"><i class="fa-regular fa-envelope"></i> Contact site support</a>
-                <p>You are logged in as <a href="#">Yan Kudashov</a> (<a href="#">Log out</a>)</p>
+                <p>You are logged in as <a href="#">User Name</a> (<a href="#">Log out</a>)</p>
                 <a href="#">Software Design Patterns | Temirgaly Dinmukhammed</a>
                 <a href="#">Data retention summary</a>
             </div>
