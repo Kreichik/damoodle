@@ -1,8 +1,10 @@
-import { kv } from '@vercel/kv';
+import Redis from 'ioredis';
 import { IncomingForm } from 'formidable';
 import fetch from 'node-fetch';
 import { createReadStream } from 'fs';
 import FormData from 'form-data';
+
+const redis = new Redis(process.env.REDIS_URL);
 
 export const config = {
     api: { bodyParser: false },
@@ -39,9 +41,12 @@ export default async function handler(req, res) {
             const tgResult = await tgResponse.json();
             if (!tgResult.ok) throw new Error(tgResult.description);
 
-            const submissionKey = `submission_${username.replace(/\s/g, '_')}`;
+            // Сохраняем данные в Redis
+            const submissionKey = `submission:${username.replace(/\s/g, '_')}`;
             const submissionData = { status: 'submitted', date: new Date().toISOString() };
-            await kv.set(submissionKey, submissionData);
+            
+            // Redis хранит строки, поэтому объект нужно преобразовать в JSON
+            await redis.set(submissionKey, JSON.stringify(submissionData));
 
             res.status(200).json({ message: 'File uploaded successfully!', fileName: file.originalFilename });
         } catch (error) {

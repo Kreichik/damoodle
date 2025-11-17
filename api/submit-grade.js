@@ -1,5 +1,7 @@
-// api/submit-grade.js
-import { kv } from '@vercel/kv';
+import Redis from 'ioredis';
+
+// Создаем подключение к Redis. Ioredis автоматически использует REDIS_URL.
+const redis = new Redis(process.env.REDIS_URL);
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
@@ -12,14 +14,12 @@ export default async function handler(req, res) {
         if (!grader || !gradee || grade === undefined) {
             return res.status(400).json({ message: 'Missing required fields.' });
         }
+        
+        const key = `grades:${gradee.replace(/\s/g, '_')}`;
+        const field = grader.replace(/\s/g, '_');
 
-        // Ключ для хранения оценок конкретного пользователя
-        // Например: "grades_Walter_White"
-        const key = `grades_${gradee.replace(/\s/g, '_')}`;
-
-        // Сохраняем оценку. hset - это команда для "словаря" (hash)
-        // Мы добавляем поле с именем оценщика и его оценкой
-        await kv.hset(key, { [grader.replace(/\s/g, '_')]: grade });
+        // Команда hset в ioredis сохраняет поле и значение в "словарь" (hash)
+        await redis.hset(key, field, grade);
 
         return res.status(200).json({ message: 'Grade submitted successfully.' });
 

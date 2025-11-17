@@ -1,5 +1,6 @@
-// api/get-grades.js
-import { kv } from '@vercel/kv';
+import Redis from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
 
 export default async function handler(req, res) {
     if (req.method !== 'GET') {
@@ -14,17 +15,20 @@ export default async function handler(req, res) {
         
         const safeUsername = username.replace(/\s/g, '_');
         
-        // Получаем статус сдачи работы
-        const submissionKey = `submission_${safeUsername}`;
-        const submissionData = await kv.get(submissionKey);
+        // Ключи для Redis
+        const submissionKey = `submission:${safeUsername}`;
+        const gradesKey = `grades:${safeUsername}`;
+
+        // Получаем данные о сдаче работы
+        const submissionJson = await redis.get(submissionKey);
+        const submissionData = submissionJson ? JSON.parse(submissionJson) : null;
         
         // Получаем все оценки для этого пользователя
-        const gradesKey = `grades_${safeUsername}`;
-        const gradesData = await kv.hgetall(gradesKey);
+        const gradesData = await redis.hgetall(gradesKey);
 
         return res.status(200).json({
             submission: submissionData,
-            grades: gradesData || {}, // Возвращаем пустой объект, если оценок нет
+            grades: gradesData || {},
         });
 
     } catch (error) {
